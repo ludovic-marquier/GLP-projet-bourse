@@ -3,6 +3,7 @@ package dataClasses;
 public class Utilisateur {
 	
 	private String nom;
+	private String id;
 
 	public Utilisateur(String nom) {
 		this.nom = nom;
