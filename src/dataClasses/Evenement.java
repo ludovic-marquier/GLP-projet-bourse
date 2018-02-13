@@ -5,6 +5,13 @@ public class Evenement {
 	private int niveaux;
 	private String type;
 	
+	
+	public Evenement(int niveaux, String type) {
+		this.niveaux = niveaux;
+		this.type = type;
+	}
+	
+	
 	public int getNiveaux() {
 		return niveaux;
 	}

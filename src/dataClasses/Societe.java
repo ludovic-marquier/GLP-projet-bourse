@@ -6,7 +6,15 @@ public class Societe {
 	private int prixDAction;
 	private int capital;
 	private int nbAction;
-	private int d;
+	
+	public Societe(String nom, int id, int prixDAction, int capital, int nbAction) {
+		super();
+		this.nom = nom;
+		this.id = id;
+		this.prixDAction = prixDAction;
+		this.capital = capital;
+		this.nbAction = nbAction;
+	}
 	
 	public String getNom() {
 		return nom;

@@ -1,14 +1,22 @@
 package dataClasses;
 
-public class Obligation {
-	private double tauxIntéret;
+public class Obligation extends Action {
+	
+	private double tauxInteret;
 
-	public double getTauxIntéret() {
-		return tauxIntéret;
+	public Obligation(double prixAchat, Societe societe, double tauxInteret) {
+		super(prixAchat, societe);
+		this.tauxInteret = tauxInteret;
 	}
 
-	public void setTauxIntéret(double tauxIntéret) {
-		this.tauxIntéret = tauxIntéret;
+	public double getTauxInteret() {
+		return tauxInteret;
+	}
+
+	public void setTauxInteret(double tauxInteret) {
+		this.tauxInteret = tauxInteret;
 	}
 	
+	
+
 }
