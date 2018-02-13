@@ -1,5 +1,16 @@
 package dataClasses;
 
-public class PaireDeDevises {
+import java.util.ArrayList;
 
+public class PaireDeDevises {
+	public ArrayList<Devise> devises;
+
+	public ArrayList<Devise> getDevises() {
+		return devises;
+	}
+
+	public void setDevises(ArrayList<Devise> devises) {
+		this.devises = devises;
+	}
+	
 }
