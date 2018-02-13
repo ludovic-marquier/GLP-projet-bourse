@@ -6,6 +6,7 @@ public class Societe {
 	private int prixDAction;
 	private int capital;
 	private int nbAction;
+	private int d;
 	
 	public String getNom() {
 		return nom;
