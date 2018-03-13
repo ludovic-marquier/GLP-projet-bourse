@@ -1,11 +1,12 @@
 package dataClasses;
 
-public class Action {
+public class Action extends ProduitFinancier{
 	
 	private double prixAchat;
 	private Societe societe;
 	
 	public Action(double prixAchat, Societe societe) {
+		super("action","eee", prixAchat);
 		this.prixAchat = prixAchat;
 		this.societe = societe;
 	}

@@ -2,12 +2,19 @@ package dataClasses;
 
 public class Societe {
 	private String nom;
-	private int id;
-	private int prixDAction;
+	private String id;
+	private String secteur;
+	private double prixDAction;
 	private int capital;
 	private int nbAction;
+	private Boolean isGrowing = false;
+	private double variation;
 	
-	public Societe(String nom, int id, int prixDAction, int capital, int nbAction) {
+	public Societe() {
+		
+	}
+	
+	public Societe(String nom, String id, double prixDAction, int capital, int nbAction) {
 		super();
 		this.nom = nom;
 		this.id = id;
@@ -22,16 +29,16 @@ public class Societe {
 	public void setNom(String nom) {
 		this.nom = nom;
 	}
-	public int getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
-	public int getPrixDAction() {
+	public double getPrixDAction() {
 		return prixDAction;
 	}
-	public void setPrixDAction(int prixDAction) {
+	public void setPrixDAction(double prixDAction) {
 		this.prixDAction = prixDAction;
 	}
 	public int getCapital() {
@@ -45,6 +52,44 @@ public class Societe {
 	}
 	public void setNbAction(int nbAction) {
 		this.nbAction = nbAction;
+	}
+	
+	public String getSecteur() {
+		return secteur;
+	}
+
+	public void setSecteur(String secteur) {
+		this.secteur = secteur;
+	}
+	
+
+	public Boolean getIsGrowing() {
+		return isGrowing;
+	}
+
+	public void setIsGrowing(Boolean isGrowing) {
+		this.isGrowing = isGrowing;
+	}
+
+	public double getVariation() {
+		return variation;
+	}
+
+	public void setVariation(double variation) {
+		this.variation = variation;
+	}
+
+	public String toString() {
+		return "NOM : "+this.nom+"\nID : "+this.id+"\nPRIX D'ACTION : "+
+	this.prixDAction+"\nCAPITAL : "+this.capital+"\nNB ACTION : "+this.nbAction+"\n\n";
+	}
+	
+	public String forLabelGrowing() {
+		return "<html>"+this.nom+"      <font color='green'>"+this.prixDAction+     "              +"+this.variation+"%</font> "+this.capital+"<br><br></html>";
+	}
+	
+	public String forLabelNotGrowing() {
+		return "<html>"+this.nom+"      <font color='red'>"+this.prixDAction+"              "+this.variation+"%</font> "+this.capital+"<br><br></html>";
 	}
 	
 }
