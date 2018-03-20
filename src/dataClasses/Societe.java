@@ -1,27 +1,32 @@
 package dataClasses;
 
+import java.util.ArrayList;
+
 public class Societe {
 	private String nom;
 	private String id;
 	private String secteur;
 	private double prixDAction;
-	private int capital;
+	private long capital;
 	private int nbAction;
 	private Boolean isGrowing = false;
 	private double variation;
+	private ArrayList<Double> historique;
 	
 	public Societe() {
-		
+		this.historique = new ArrayList<>();
 	}
 	
-	public Societe(String nom, String id, double prixDAction, int capital, int nbAction) {
+	public Societe(String nom, String id, double prixDAction, long capital, int nbAction) {
 		super();
 		this.nom = nom;
 		this.id = id;
 		this.prixDAction = prixDAction;
 		this.capital = capital;
 		this.nbAction = nbAction;
+		
 	}
+	
 	
 	public String getNom() {
 		return nom;
@@ -41,15 +46,24 @@ public class Societe {
 	public void setPrixDAction(double prixDAction) {
 		this.prixDAction = prixDAction;
 	}
-	public int getCapital() {
+	public long getCapital() {
 		return capital;
 	}
-	public void setCapital(int capital) {
+	public void setCapital(long capital) {
 		this.capital = capital;
 	}
 	public int getNbAction() {
 		return nbAction;
 	}
+	
+	public ArrayList<Double> getHistorique() {
+		return historique;
+	}
+
+	public void setHistorique(ArrayList<Double> historique) {
+		this.historique = historique;
+	}
+
 	public void setNbAction(int nbAction) {
 		this.nbAction = nbAction;
 	}
