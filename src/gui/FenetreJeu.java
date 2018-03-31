@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
+import dataClasses.ProduitFinancier;
 import dataClasses.Societe;
 import gui.MainGui.SwingChiller;
 import main.GameManager;
@@ -46,12 +47,12 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	private JPanel Panel1 = new JPanel();
 	private JPanel Panel2 = new JPanel();
 	private JPanel Panel3 = new JPanel();
+	private JPanel panel4 = new JPanel();
 	
 	private JLabel portfeuilStateLabel = new JLabel();
 	
 	private JPanel actionPanel;
-	
-	int i;
+	private Boolean showActions = true;
 	
 	
 	private JButton FilDActualite = new MyButton("Fil d'actualité");
@@ -69,7 +70,10 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	    this.setContentPane(new JLabel(new ImageIcon(".../images/bourse.jpg")));
 	    container = this.getContentPane();
 	    
-	    this.setBackground(new Color(220,220,255));
+	    JLabel background=new JLabel(new ImageIcon("C:\\Users\\Ludo\\eclipse-workspace\\GLP-projet-bourse\\images\\bourse.jpg"));
+	    add(background);
+
+	    setBackground(new Color(247, 242, 207));
 	    
 	    BorderLayout bord = new BorderLayout();
 	    bord.setHgap(100);
@@ -78,43 +82,64 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	    
 	    this.manager = manager;
 	    
+	    JLabel background1 = new JLabel(new ImageIcon("../images/bourse.jpg"));
+	    
 
 	    FilDActualite.setFont(new Font("Biko", Font.PLAIN, 20));
 	    Portefeuille.setFont(new Font("Biko", Font.PLAIN, 20));
+	    Portefeuille.setForeground(Color.WHITE);
 	    Favoris.setFont(new Font("Biko", Font.PLAIN, 20));
+	    
+	    FilDActualite.setForeground(Color.BLACK);
+	    FilDActualite.setBackground(new Color(255,255,255));
 	   
 	    Panel1.add(FilDActualite);
-	    FilDActualite.addActionListener(this);
+	    
+	    
+	    
+	    FilDActualite.addActionListener(new ActionListener() { 
+	    	  public void actionPerformed(ActionEvent e) { 
+	    		  if(!showActions) {
+	    			  showActions = true;
+		    		  callWorker();
+	    		  }
+	    		
+	    		  } 
+	    		} );
+	    
 	    Panel1.add(Portefeuille);
-	    Portefeuille.addActionListener(this);
+	    Portefeuille.addActionListener(new ActionListener() { 
+	    	  public void actionPerformed(ActionEvent e) { 
+	    		    showActions = false;
+	    		    showPortefeuil();
+	    		  } 
+	    		} );
+	    
+	    
 	    Panel1.add(Favoris);
 	    Favoris.addActionListener(this);
 	    
 	   
 	    Panel1.setLayout(new GridLayout(4,1));
 	    
-	    JLabel niveauLabel =new JLabel("Niveau de difficulté :");
+	    JLabel niveauLabel =new JLabel("Niveau de difficulté : Difficile");
 
 	    niveauLabel.setFont(new Font("Biko", Font.PLAIN, 20));
 
-	    portfeuilStateLabel.setFont(new Font("Biko", Font.PLAIN, 20));
+	    portfeuilStateLabel.setFont(new Font("Biko", Font.PLAIN, 27));
+	    portfeuilStateLabel.setForeground(Color.WHITE);
 	    Panel1.add(niveauLabel);
+	    Panel2.setBackground(new Color(48, 46, 36));
 	    Panel2.add(portfeuilStateLabel);
 	  
 	 
 	    actionPanel = new JPanel(new GridLayout(60,1));
 	    actionPanel.setBackground(Color.WHITE);
-	    Panel2.setBackground(Color.WHITE);
+	    Panel2.setBackground(Color.BLACK);
 		JScrollPane pane = new JScrollPane(actionPanel);
 		pane.getVerticalScrollBar().setUnitIncrement(16);
 	    
 
-		this.getContentPane().add("West",Panel1);
-		this.getContentPane().add("South",Panel2);
-		this.getContentPane().add(Panel3);
-		this.pack();
-		this.setVisible(true);
-		this.setSize(1100, 900);
 
 		
 		FlowLayout b = new FlowLayout(FlowLayout.CENTER);
@@ -122,6 +147,12 @@ public class FenetreJeu extends JFrame implements ActionListener {
 		FlowLayout c = new FlowLayout(FlowLayout.RIGHT);
 		Panel3.setLayout(c);
 		Panel2.add(Panel3);
+		
+		JLabel titre = new JLabel("Simulateur boursier");
+		titre.setFont(new Font("Biko", Font.PLAIN, 37));
+		titre.setForeground(Color.WHITE);
+		panel4.setBackground(new Color(48, 46, 36));
+		panel4.add(titre);
 			
 		
 		JTabbedPane tabbedPane = new JTabbedPane();
@@ -129,7 +160,12 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	
 		tabbedPane.addTab("Actions", pane);
 		tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
+		
    
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new FlowLayout());
+		mainPanel.add(tabbedPane);
+		mainPanel.add(tabbedPane);
     
 		JComponent panel2 = makeTextPanel("...");
 		tabbedPane.addTab("Obligations", panel2);
@@ -138,11 +174,21 @@ public class FenetreJeu extends JFrame implements ActionListener {
 		JComponent panel3 = makeTextPanel("...");
 		tabbedPane.addTab("Produits dérivés", panel3);
 		tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
-        add(tabbedPane);
+        add(mainPanel);
+
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         
         
-        SwingChiller chiller = new SwingChiller();
+
+		this.getContentPane().add("West",Panel1);
+		this.getContentPane().add("South",Panel2);
+		this.getContentPane().add("North",panel4);
+		this.getContentPane().add("Center",tabbedPane);
+		this.pack();
+		this.setVisible(true);
+		this.setSize(1100, 900);
+        
+        mSwingWorker chiller = new mSwingWorker();
 		chiller.execute();
     }
 		
@@ -171,13 +217,31 @@ public class FenetreJeu extends JFrame implements ActionListener {
 		
 	}
 	
-	class SwingChiller extends SwingWorker<ArrayList<Societe>, Integer>
+	
+	public void showPortefeuil() {
+		ArrayList<ProduitFinancier> produits = manager.getPortefeuil();
+		actionPanel.removeAll();
+        Iterator it = produits.iterator();
+        
+        //portfeuilStateLabel.setText(manager.getPortefeuilState());
+        
+        while(it.hasNext()) {
+        	ProduitFinancier financier = (ProduitFinancier) it.next();
+     	    actionPanel.add(new JLabel(financier.toString()));
+        }
+        
+        revalidate();
+	}
+	
+	
+	class mSwingWorker extends SwingWorker<ArrayList<Societe>, Integer>
 	{
 	    protected ArrayList<Societe> doInBackground() throws Exception
 	    {
 	    	while(!this.isCancelled()) {
 	   
-	    		Thread.sleep(1500);
+	    		Thread.sleep(1000);
+	    		System.out.println("saluut");
 		 	    return manager.calculateVariation();
 	    	}
 			return null;
@@ -186,40 +250,46 @@ public class FenetreJeu extends JFrame implements ActionListener {
 
 	    protected void done()
 	    {
-	        try
-	        {
-	           actionPanel.removeAll();
-	           ArrayList<Societe> bo = get();
-	           Iterator it = bo.iterator();
-	           
-	           portfeuilStateLabel.setText(manager.getPortefeuilState());
-	           
-	           while(it.hasNext()) {
-	        	   Societe societe = (Societe) it.next();
-	        	   if(societe.getIsGrowing()) {
-	        		   actionPanel.add(new Cotation(societe, manager));
-	        	   }else {
-	        		   actionPanel.add(new Cotation(societe, manager));
-	        	   }
-	        	   
-	           }
-	           
-	           revalidate();
-	           callChiller();
-	           
-	        }
-	        catch (Exception e)
-	        {
-	            e.printStackTrace();
-	        }
+	    	
+	    	if(showActions) {
+	    		 try
+	 	        {
+	 	           actionPanel.removeAll();
+	 	           ArrayList<Societe> bo = get();
+	 	           Iterator it = bo.iterator();
+	 	           
+	 	           portfeuilStateLabel.setText(manager.getPortefeuilState());
+	 	           
+	 	           while(it.hasNext()) {
+	 	        	   Societe societe = (Societe) it.next();
+	 	        	   if(societe.getIsGrowing()) {
+	 	        		   actionPanel.add(new Cotation(societe, manager));
+	 	        	   }else {
+	 	        		   actionPanel.add(new Cotation(societe, manager));
+	 	        	   }
+	 	        	   
+	 	           }
+	 	           
+	 	           revalidate();
+	 	           callWorker();
+	 	           
+	 	        }
+	 	        catch (Exception e)
+	 	        {
+	 	            e.printStackTrace();
+	 	        }
+	    	}
+	       
 	    }
 	}
 	
 	
-	 public void callChiller() {
-		 System.out.println(i++);
-			SwingChiller chill = new SwingChiller();
-			chill.execute();
-		}
+	 public void callWorker() {
+		 if(showActions) {
+			 mSwingWorker worker = new mSwingWorker();
+			 worker.execute(); 
+		 }
+			
+	}
 	
 }

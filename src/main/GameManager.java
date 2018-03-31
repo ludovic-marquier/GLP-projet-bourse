@@ -18,6 +18,7 @@ public class GameManager{
 	private SocieteManager societeManager;
 	private FenetreJeu gui;
 	
+	
 	public void start() {
 		init();
 		loop();
@@ -75,6 +76,10 @@ public class GameManager{
 		return this.portefeuilManager.portefeuilState();
 	}
 	
+	public ArrayList<ProduitFinancier> getPortefeuil(){
+		return this.portefeuilManager.portefeuilStateDetails();
+	}
+	
 	public Boolean acheterAction(Societe societe, int nbAction) {
 		Action action = new Action(societe.getPrixDAction(), societe);
 		if(this.portefeuilManager.acheter(action, nbAction)) {
@@ -83,8 +88,6 @@ public class GameManager{
 			return false;
 		}
 	}
-	
-	
 	
 	private String extractId(String input) {
 		return input.substring(2, input.length());

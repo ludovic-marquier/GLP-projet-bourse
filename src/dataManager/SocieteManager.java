@@ -19,7 +19,6 @@ public class SocieteManager {
 	}
 	
 	
-	
 	public SocieteManager(ArrayList<Societe> societeList) {
 		this.societeList = societeList;
 	}
@@ -79,6 +78,7 @@ public class SocieteManager {
 			
 			nwPrice = updtatePriceByHistorique(currentSociete);
 			nwPrice = round(nwPrice+new Generator().generateRVariation(),2);
+			nwPrice = checkSector(nwPrice, currentSociete, this.societeList);
 			
 			if (nwPrice < 0) {nwPrice = 0;}
 			
@@ -151,6 +151,54 @@ public class SocieteManager {
 		return nwPrice;
 	}
 	
+	public double checkSector(double prevPrice, Societe societe, ArrayList<Societe> societeList) {
+		double nwPrice = 0;
+		int growing = 0;
+		int notGrowing =0;
+		
+		Iterator it = societeList.iterator();
+		while(it.hasNext()) {
+			Societe cSociete = (Societe) it.next();
+			if(cSociete.getSecteur().equals(societe.getSecteur())) {
+				growing++;
+			}else {
+				notGrowing++;
+			}
+		}
+		
+		
+		//Calcul du pourentage d'entreprise dont la croissance est positive dans le secteur de la societe etudié
+		//et variation du cour different par tranches de 10aines
+		
+		int pourcentGrowing = (growing/(growing+notGrowing))*100;
+		
+		if(pourcentGrowing<10) {
+			
+		}else if(pourcentGrowing<20) {
+			
+		}else if(pourcentGrowing<30) {
+			
+		}else if(pourcentGrowing<40) {
+			
+		}else if(pourcentGrowing<50) {
+			
+		}else if(pourcentGrowing<60) {
+			
+		}else if(pourcentGrowing<70) {
+			
+		}else if(pourcentGrowing<80) {
+			
+		}else if(pourcentGrowing<90) {
+			
+		}else if(pourcentGrowing<100) {
+			
+		}else {
+			
+		}
+		
+		return nwPrice;
+	}
+	
 	public double updatePriceByRandom(double prevPrice) {
 		return round(prevPrice+new Generator().generateRVariation(),2);
 	}
@@ -162,7 +210,6 @@ public class SocieteManager {
 	public double calculatePrixActionByPourcentage(double prix, double pourcentage) {
 		return prix+(prix*(pourcentage/100));
 	}
-	
 	
 	public static double round(double value, int places) {
 	    if (places < 0) throw new IllegalArgumentException();

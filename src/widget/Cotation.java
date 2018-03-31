@@ -21,12 +21,12 @@ public class Cotation extends JLabel{
 		this.manager = manager;
 		
         addMouseListener(
-                new URLOpenAdapter());
+                new ActionClickAdapter());
 		
 	}
 
 
-	private class URLOpenAdapter extends MouseAdapter {
+	private class ActionClickAdapter extends MouseAdapter {
 
         @Override
         public void mouseClicked(MouseEvent e) {

@@ -54,16 +54,11 @@ public class PortefeuilManager {
 	
 	public String portefeuilState() {
 		
-		return "Solde compte : "+this.portefeuille.getCapitalRestant() + "";
+		return "Solde compte : "+this.portefeuille.getCapitalRestant() + "    Capital investit : "+this.portefeuille.getCapitalInvestit() + "    Capital virtuel : "+this.portefeuille.getCapitalVirtuel();
 	}
 	
-	public String portefeuilStateDetails() {
-		String result = "VOICI LES PRODUITS FINANCIER DANS VOTRE PORTEFEUIL\n";
-		Iterator it = this.portefeuille.getProduits().iterator();
-		while(it.hasNext()) {
-			result = result+it.next().toString();
-		}
-		return result;
+	public ArrayList<ProduitFinancier> portefeuilStateDetails() {
+		return this.portefeuille.getProduits();
 	}
 	
 	
