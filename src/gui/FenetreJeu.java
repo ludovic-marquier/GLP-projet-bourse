@@ -6,17 +6,22 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -55,25 +60,18 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	private Boolean showActions = true;
 	
 	
-	private JButton FilDActualite = new MyButton("Fil d'actualité");
-	private JButton Portefeuille = new MyButton("Portefeuille");
-	private JButton Favoris = new MyButton("Favoris");
-	
 	
 	public FenetreJeu(GameManager manager) {
 		
 		this.setVisible(false);
 	    this.setTitle("Simulateur boursier");
 	    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    
-	 
-	    this.setContentPane(new JLabel(new ImageIcon(".../images/bourse.jpg")));
+	    this.setContentPane(new JLabel());
+	  
+	    this.setBackground(new Color(173, 216, 230));
+	    Panel1.setBackground(new Color(173, 216, 230));
 	    container = this.getContentPane();
-	    
-	    JLabel background=new JLabel(new ImageIcon("C:\\Users\\Ludo\\eclipse-workspace\\GLP-projet-bourse\\images\\bourse.jpg"));
-	    add(background);
-
-	    setBackground(new Color(247, 242, 207));
+	   
 	    
 	    BorderLayout bord = new BorderLayout();
 	    bord.setHgap(100);
@@ -82,17 +80,17 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	    
 	    this.manager = manager;
 	    
-	    JLabel background1 = new JLabel(new ImageIcon("../images/bourse.jpg"));
 	    
-
-	    FilDActualite.setFont(new Font("Biko", Font.PLAIN, 20));
-	    Portefeuille.setFont(new Font("Biko", Font.PLAIN, 20));
-	    Portefeuille.setForeground(Color.WHITE);
-	    Favoris.setFont(new Font("Biko", Font.PLAIN, 20));
+	    ImageIcon warnIcon = new ImageIcon(new ImageIcon("data/actualite.png").getImage().getScaledInstance(100,100, Image.SCALE_DEFAULT));
+	    JButton FilDActualite = new JButton(warnIcon);
 	    
-	    FilDActualite.setForeground(Color.BLACK);
-	    FilDActualite.setBackground(new Color(255,255,255));
+	    ImageIcon warnIcon2 = new ImageIcon(new ImageIcon("data/portefeuille.png").getImage().getScaledInstance(100,100, Image.SCALE_DEFAULT));
+	    JButton Portefeuille = new JButton(warnIcon2);
+	    
+	    ImageIcon warnIcon3 = new ImageIcon(new ImageIcon("data/favoris.png").getImage().getScaledInstance(100,100, Image.SCALE_DEFAULT));
+	    JButton  Favoris= new JButton(warnIcon3);
 	   
+	  
 	    Panel1.add(FilDActualite);
 	    
 	    
@@ -106,6 +104,7 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	    		
 	    		  } 
 	    		} );
+	    
 	    
 	    Panel1.add(Portefeuille);
 	    Portefeuille.addActionListener(new ActionListener() { 
@@ -122,8 +121,8 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	   
 	    Panel1.setLayout(new GridLayout(4,1));
 	    
-	    JLabel niveauLabel =new JLabel("Niveau de difficulté : Difficile");
-
+	    JLabel niveauLabel = new JLabel("Niveau de difficulté : "
+	    		+ "Difficile");
 	    niveauLabel.setFont(new Font("Biko", Font.PLAIN, 20));
 
 	    portfeuilStateLabel.setFont(new Font("Biko", Font.PLAIN, 27));
@@ -194,6 +193,17 @@ public class FenetreJeu extends JFrame implements ActionListener {
 		
 	
 
+
+
+	private void setOpacity(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+
 	private JComponent makeTextPanel(String text) {
 		JPanel panel = new JPanel(false);
         JLabel filler = new JLabel(text);
@@ -221,7 +231,7 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	public void showPortefeuil() {
 		ArrayList<ProduitFinancier> produits = manager.getPortefeuil();
 		actionPanel.removeAll();
-        Iterator it = produits.iterator();
+        Iterator<ProduitFinancier> it = produits.iterator();
         
         //portfeuilStateLabel.setText(manager.getPortefeuilState());
         
@@ -241,7 +251,7 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	    	while(!this.isCancelled()) {
 	   
 	    		Thread.sleep(1000);
-	    		System.out.println("saluut");
+	    		System.out.println("salut");
 		 	    return manager.calculateVariation();
 	    	}
 			return null;
@@ -256,7 +266,7 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	 	        {
 	 	           actionPanel.removeAll();
 	 	           ArrayList<Societe> bo = get();
-	 	           Iterator it = bo.iterator();
+	 	           Iterator<Societe> it = bo.iterator();
 	 	           
 	 	           portfeuilStateLabel.setText(manager.getPortefeuilState());
 	 	           

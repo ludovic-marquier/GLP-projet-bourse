@@ -99,11 +99,11 @@ public class Societe {
 	}
 	
 	public String forLabelGrowing() {
-		return "<html>"+this.nom+"      <font color='green'>"+this.prixDAction+     "              +"+this.variation+"%</font> "+this.capital+"<br><br></html>";
+		return "<html>"+this.nom+"      <font color='green'>"+this.prixDAction+     "              +"+this.variation+"%</font> "+this.secteur+"<br><br></html>";
 	}
 	
 	public String forLabelNotGrowing() {
-		return "<html>"+this.nom+"      <font color='red'>"+this.prixDAction+"              "+this.variation+"%</font> "+this.capital+"<br><br></html>";
+		return "<html>"+this.nom+"      <font color='red'>"+this.prixDAction+"              "+this.variation+"%</font> "+this.secteur+"<br><br></html>";
 	}
 	
 }

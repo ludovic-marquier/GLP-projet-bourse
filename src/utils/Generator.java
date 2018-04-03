@@ -48,7 +48,7 @@ public class Generator {
 	
 	public long generateCapital() {
 		rnd = new Random();
-		long x = 5000000L;
+		long x = 500000000L;
 		long y = 100000000000L;
 		long number = x+((long)(rnd.nextDouble()*(y-x)));
 		return number;

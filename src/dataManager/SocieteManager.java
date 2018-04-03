@@ -70,17 +70,20 @@ public class SocieteManager {
 	
 	
 	public void updateList() {
+		int g=0;
+		int ng =0;
 		for(int i=0 ; i<this.societeList.size() ; i++) {
 			Societe currentSociete = this.societeList.get(i);
 			
 			double prevPrice = currentSociete.getPrixDAction();
-			double nwPrice = 0;
+			double nwPrice = prevPrice;
+		
 			
 			nwPrice = updtatePriceByHistorique(currentSociete);
-			nwPrice = round(nwPrice+new Generator().generateRVariation(),2);
 			nwPrice = checkSector(nwPrice, currentSociete, this.societeList);
+			nwPrice = round(nwPrice+new Generator().generateRVariation(),2);
 			
-			if (nwPrice < 0) {nwPrice = 0;}
+			if (nwPrice <= 0) {nwPrice = 5;}
 			
 			double variation = calculateVariation(prevPrice, nwPrice);
 			currentSociete.setPrixDAction(nwPrice);
@@ -101,11 +104,13 @@ public class SocieteManager {
 			
 			if(prevPrice<=nwPrice) {
 				currentSociete.setIsGrowing(true);
+				g++;
 			}else {
 				currentSociete.setIsGrowing(false);
+				ng++;
 			}
-		
 		}
+		System.out.println(g+"    "+ng);
 	}
 	
 	
@@ -122,6 +127,9 @@ public class SocieteManager {
 		return matchingSociete;
 	}
 
+	public void updateSociete(Societe societe, double nwPrice) {
+		
+	}
 
 	public double updtatePriceByHistorique(Societe currentSociete) {
 		double nwPrice = currentSociete.getPrixDAction();
@@ -152,48 +160,51 @@ public class SocieteManager {
 	}
 	
 	public double checkSector(double prevPrice, Societe societe, ArrayList<Societe> societeList) {
-		double nwPrice = 0;
-		int growing = 0;
-		int notGrowing =0;
+		double nwPrice = prevPrice;
+		double growing = 0;
+		double notGrowing =0;
 		
 		Iterator it = societeList.iterator();
 		while(it.hasNext()) {
 			Societe cSociete = (Societe) it.next();
 			if(cSociete.getSecteur().equals(societe.getSecteur())) {
-				growing++;
-			}else {
-				notGrowing++;
+				if(cSociete.getIsGrowing()) {
+					growing++;
+				}else {
+					notGrowing++;
+				}
 			}
 		}
 		
-		
+
 		//Calcul du pourentage d'entreprise dont la croissance est positive dans le secteur de la societe etudié
 		//et variation du cour different par tranches de 10aines
 		
-		int pourcentGrowing = (growing/(growing+notGrowing))*100;
+		double pourcentGrowing = (growing/(growing+notGrowing))*100;
+	
 		
 		if(pourcentGrowing<10) {
-			
+			nwPrice = calculatePrixActionByPourcentage(nwPrice, -2);
 		}else if(pourcentGrowing<20) {
-			
+			nwPrice = calculatePrixActionByPourcentage(nwPrice, -1.8);
 		}else if(pourcentGrowing<30) {
-			
+			nwPrice = calculatePrixActionByPourcentage(nwPrice, -1);
 		}else if(pourcentGrowing<40) {
-			
+			nwPrice = calculatePrixActionByPourcentage(nwPrice, -0.2);
 		}else if(pourcentGrowing<50) {
-			
+			nwPrice = calculatePrixActionByPourcentage(nwPrice, 0);
 		}else if(pourcentGrowing<60) {
-			
+			nwPrice = calculatePrixActionByPourcentage(nwPrice, 0.2);
 		}else if(pourcentGrowing<70) {
-			
+			nwPrice = calculatePrixActionByPourcentage(nwPrice, 0.4);
 		}else if(pourcentGrowing<80) {
-			
+			nwPrice = calculatePrixActionByPourcentage(nwPrice, 1);
 		}else if(pourcentGrowing<90) {
-			
+			nwPrice = calculatePrixActionByPourcentage(nwPrice, 1.5);
 		}else if(pourcentGrowing<100) {
-			
+			nwPrice = calculatePrixActionByPourcentage(nwPrice, 2);
 		}else {
-			
+			nwPrice = calculatePrixActionByPourcentage(nwPrice, 3);
 		}
 		
 		return nwPrice;
