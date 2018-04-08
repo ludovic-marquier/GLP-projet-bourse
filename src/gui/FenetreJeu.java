@@ -15,9 +15,15 @@ import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
+import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -27,6 +33,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -34,12 +41,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
+import dataClasses.Devise;
+import dataClasses.Evenement;
 import dataClasses.ProduitFinancier;
 import dataClasses.Societe;
 import gui.MainGui.SwingChiller;
 import main.GameManager;
 import widget.Cotation;
 import widget.MyButton;
+import widget.ObligationLabel;
+import widget.Position;
 
 public class FenetreJeu extends JFrame implements ActionListener {
 	
@@ -53,15 +64,28 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	private JPanel Panel2 = new JPanel();
 	private JPanel Panel3 = new JPanel();
 	private JPanel panel4 = new JPanel();
+	private JPanel eventPanel = new JPanel();
+	private JPanel obligationPanel = new JPanel(new GridLayout(61,1));
 	
 	private JLabel portfeuilStateLabel = new JLabel();
 	
+	private ArrayList<Societe> societes = new ArrayList<Societe>();
+	private ArrayList<ProduitFinancier> produits = new ArrayList<ProduitFinancier>();
+	private ArrayList<Devise> devises = new ArrayList<Devise>();
+	//private ArrayList<Societe> societes = new ArrayList<Societe>();
+	private ArrayList<Evenement>evenements = new ArrayList<Evenement>();
+	
 	private JPanel actionPanel;
 	private Boolean showActions = true;
+	private Boolean showFavoris = false;
+	private String csv ="";
+	int i = 0;
+	private Boolean first = true;
+	static final Logger logger = Logger.getRootLogger();
 	
 	
 	
-	public FenetreJeu(GameManager manager) {
+	public FenetreJeu(GameManager manager, String niveau) {
 		
 		this.setVisible(false);
 	    this.setTitle("Simulateur boursier");
@@ -74,12 +98,18 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	   
 	    
 	    BorderLayout bord = new BorderLayout();
-	    bord.setHgap(100);
-	    bord.setVgap(100);
+	    bord.setHgap(50);
+	    bord.setVgap(50);
 	    container.setLayout(bord);
 	    
 	    this.manager = manager;
 	    
+	    JLabel titreActu =new JLabel(" Actualité en temps réel : ");
+	    titreActu.setFont(new Font("Biko", Font.PLAIN, 20));
+	    eventPanel.setBackground(new Color(255,255,255));
+	    eventPanel.setLayout(new GridLayout(10,1));
+	    eventPanel.add(titreActu);
+	    //eventPanel.setBorder(new MyBorder());
 	    
 	    ImageIcon warnIcon = new ImageIcon(new ImageIcon("data/actualite.png").getImage().getScaledInstance(100,100, Image.SCALE_DEFAULT));
 	    JButton FilDActualite = new JButton(warnIcon);
@@ -97,6 +127,7 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	    
 	    FilDActualite.addActionListener(new ActionListener() { 
 	    	  public void actionPerformed(ActionEvent e) { 
+	    		  showFavoris = false;
 	    		  if(!showActions) {
 	    			  showActions = true;
 		    		  callWorker();
@@ -110,19 +141,27 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	    Portefeuille.addActionListener(new ActionListener() { 
 	    	  public void actionPerformed(ActionEvent e) { 
 	    		    showActions = false;
+	    		    first =true;
 	    		    showPortefeuil();
 	    		  } 
 	    		} );
 	    
 	    
 	    Panel1.add(Favoris);
-	    Favoris.addActionListener(this);
+	    Favoris.addActionListener(new ActionListener() { 
+	    	  public void actionPerformed(ActionEvent e) { 
+	    		  actionPanel.removeAll();
+	    		  revalidate();
+	    		  showFavoris =true;
+	    		  first = true;
+	    		  } 
+	    		} );
 	    
 	   
 	    Panel1.setLayout(new GridLayout(4,1));
 	    
 	    JLabel niveauLabel = new JLabel("Niveau de difficulté : "
-	    		+ "Difficile");
+	    		+ niveau);
 	    niveauLabel.setFont(new Font("Biko", Font.PLAIN, 20));
 
 	    portfeuilStateLabel.setFont(new Font("Biko", Font.PLAIN, 27));
@@ -132,12 +171,14 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	    Panel2.add(portfeuilStateLabel);
 	  
 	 
-	    actionPanel = new JPanel(new GridLayout(60,1));
+	    actionPanel = new JPanel(new GridLayout(61,1));
 	    actionPanel.setBackground(Color.WHITE);
 	    Panel2.setBackground(Color.BLACK);
 		JScrollPane pane = new JScrollPane(actionPanel);
 		pane.getVerticalScrollBar().setUnitIncrement(16);
-	    
+		
+		JScrollPane pane3 = new JScrollPane(obligationPanel);
+		pane3.getVerticalScrollBar().setUnitIncrement(16);
 
 
 		
@@ -164,16 +205,15 @@ public class FenetreJeu extends JFrame implements ActionListener {
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new FlowLayout());
 		mainPanel.add(tabbedPane);
-		mainPanel.add(tabbedPane);
     
 		JComponent panel2 = makeTextPanel("...");
-		tabbedPane.addTab("Obligations", panel2);
-		tabbedPane.setMnemonicAt(1, KeyEvent.VK_1);
+		tabbedPane.addTab("Obligations", pane3);
+		tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
     
 		JComponent panel3 = makeTextPanel("...");
 		tabbedPane.addTab("Produits dérivés", panel3);
 		tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
-        add(mainPanel);
+        add(tabbedPane);
 
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         
@@ -183,6 +223,7 @@ public class FenetreJeu extends JFrame implements ActionListener {
 		this.getContentPane().add("South",Panel2);
 		this.getContentPane().add("North",panel4);
 		this.getContentPane().add("Center",tabbedPane);
+		this.getContentPane().add("East", eventPanel);
 		this.pack();
 		this.setVisible(true);
 		this.setSize(1100, 900);
@@ -192,16 +233,10 @@ public class FenetreJeu extends JFrame implements ActionListener {
     }
 		
 	
-
-
-
 	private void setOpacity(boolean b) {
 		// TODO Auto-generated method stub
 		
 	}
-
-
-
 
 
 	private JComponent makeTextPanel(String text) {
@@ -231,53 +266,103 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	public void showPortefeuil() {
 		ArrayList<ProduitFinancier> produits = manager.getPortefeuil();
 		actionPanel.removeAll();
-        Iterator<ProduitFinancier> it = produits.iterator();
+		revalidate();
+ 
+        Iterator it2 = this.societes.iterator();
         
-        //portfeuilStateLabel.setText(manager.getPortefeuilState());
+        portfeuilStateLabel.setText(manager.getPortefeuilState());
         
-        while(it.hasNext()) {
-        	ProduitFinancier financier = (ProduitFinancier) it.next();
-     	    actionPanel.add(new JLabel(financier.toString()));
+        if(produits.size() == 0) {
+        	actionPanel.add(new JLabel("Vous n'avez pas de produits financier dans votre portefeuille pour le moment"));
         }
         
+        while(it2.hasNext()) {
+        	Societe societe = (Societe)it2.next();
+        	int occurence = 0;
+            Iterator<ProduitFinancier> it = produits.iterator();
+        	 while(it.hasNext()) {
+        		ProduitFinancier produit = it.next();
+ 
+        		if(produit.getParentId().equals(societe.getId())) {
+        			occurence++;
+        		}
+          	    
+             }
+        	 System.out.println(societe.getId());
+        	 if(occurence != 0) {
+        		 Position position = new Position(societe, this.manager, occurence);
+        		 position.setFont(new Font("Geometos", Font.PLAIN, 14));
+        		 actionPanel.add(position);
+        	 }
+        }
+       
         revalidate();
 	}
 	
 	
-	class mSwingWorker extends SwingWorker<ArrayList<Societe>, Integer>
+	class mSwingWorker extends SwingWorker<Void, Integer>
 	{
-	    protected ArrayList<Societe> doInBackground() throws Exception
+	    protected Void doInBackground() throws Exception
 	    {
 	    	while(!this.isCancelled()) {
-	   
+	    		
+	    		evenements = manager.updateEvenements();
+	    		societes = manager.calculateVariation();
+	    		produits = manager.getPortefeuil();
+	    
+	    		
+	    
 	    		Thread.sleep(1000);
-	    		System.out.println("salut");
-		 	    return manager.calculateVariation();
+	    		
+	    		  return null;
 	    	}
-			return null;
-	    	  
+	    	
+	    	  return null;
 	    }
 
 	    protected void done()
 	    {
-	    	
+	    	eventPanel.removeAll();
 	    	if(showActions) {
 	    		 try
 	 	        {
 	 	           actionPanel.removeAll();
-	 	           ArrayList<Societe> bo = get();
-	 	           Iterator<Societe> it = bo.iterator();
+	 	           obligationPanel.removeAll();
+	 	           
+	 	           
+	 	           first = false;
+	 	          
+	 	           //ArrayList<Societe> bo = get();
+	 	           Iterator<Societe> it = societes.iterator();
+	 	           Iterator it2 = evenements.iterator();
 	 	           
 	 	           portfeuilStateLabel.setText(manager.getPortefeuilState());
 	 	           
 	 	           while(it.hasNext()) {
 	 	        	   Societe societe = (Societe) it.next();
-	 	        	   if(societe.getIsGrowing()) {
-	 	        		   actionPanel.add(new Cotation(societe, manager));
+	 	        	   if(showFavoris) {
+	 	        		   if(manager.getFavoris().contains(societe)) {
+	 	        			   displaySociete(societe, true);
+	 	        		   }else {
+	 	        			   revalidate();
+	 	        		   }
 	 	        	   }else {
-	 	        		   actionPanel.add(new Cotation(societe, manager));
+	 	        		   displaySociete(societe, false);
 	 	        	   }
 	 	        	   
+	 	        	   if(societe.getNom().equals("SpaceX")) {
+	 	        		   csv =i+","+societe.getPrixDAction();
+	 	        		   bounce();
+	 	        	   }
+	 	           }
+	 	 
+	 	        JLabel titreActu =new JLabel(" Actualité en temps réel : ");
+	 	 	    titreActu.setFont(new Font("Biko", Font.PLAIN, 20));
+	 	 	    eventPanel.add(titreActu);
+	 	          for(int i =0 ; i<evenements.size(); i++) {
+	 	        	   Evenement evenement = evenements.get(i);
+	 	        	   eventPanel.add(new JLabel(evenement.toString()));
+	 	        	  revalidate();
 	 	           }
 	 	           
 	 	           revalidate();
@@ -288,6 +373,8 @@ public class FenetreJeu extends JFrame implements ActionListener {
 	 	        {
 	 	            e.printStackTrace();
 	 	        }
+	    	}else {
+	    		showPortefeuil();
 	    	}
 	       
 	    }
@@ -298,8 +385,40 @@ public class FenetreJeu extends JFrame implements ActionListener {
 		 if(showActions) {
 			 mSwingWorker worker = new mSwingWorker();
 			 worker.execute(); 
+			 i++;
+			 
 		 }
 			
 	}
+	 
+	 public void displaySociete(Societe societe, Boolean fav) {
+		   Cotation cotation = new Cotation(societe, manager, fav);
+ 		   cotation.setFont(new Font("Geometos", Font.PLAIN, 14));
+ 		   actionPanel.add(cotation);
+ 		   if(societe.getHasObligations()) {
+ 			   ObligationLabel label = new ObligationLabel(societe, manager, fav);
+ 			   label.setFont(new Font("Geometos", Font.PLAIN, 14));
+ 			   obligationPanel.add(label);
+ 		   }
+ 		   
+	 }
+	 
+	 
+	 public void bounce() {
+		 try {
+			 File fout = new File("test.csv");
+				FileOutputStream fos = new FileOutputStream(fout, true);
+			 
+				BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+					bw.write(csv);
+					bw.newLine();
+			
+			 
+				bw.close();
+			}catch(IOException e) {
+			 
+		 }
+	 }
 	
 }

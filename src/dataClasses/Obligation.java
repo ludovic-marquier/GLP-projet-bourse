@@ -3,15 +3,16 @@ package dataClasses;
 public class Obligation extends Action {
 	
 	private double tauxInteret;
-	private String frequenceRemboursement;
-	private String echeance;
+	private int frequenceRemboursement;
+	private int echeance;
+	private int vie;
 
-	public Obligation(double prixAchat, Societe societe, double tauxInteret, String frequenceRemboursement, 
-			String echeance) {
+	public Obligation(double prixAchat, Societe societe, double tauxInteret, int frequenceRemboursement, 
+			int  string) {
 		super(prixAchat, societe);
 		this.tauxInteret = tauxInteret;
 		this.frequenceRemboursement = frequenceRemboursement;
-		this.echeance = echeance;
+		this.echeance = string;
 	}
 
 	public double getTauxInteret() {
@@ -22,22 +23,35 @@ public class Obligation extends Action {
 		this.tauxInteret = tauxInteret;
 	}
 
-	public String getFrequenceRemboursement() {
+	public int getFrequenceRemboursement() {
 		return frequenceRemboursement;
 	}
 
-	public void setFrequenceRemboursement(String frequenceRemboursement) {
+	public void setFrequenceRemboursement(int frequenceRemboursement) {
 		this.frequenceRemboursement = frequenceRemboursement;
 	}
 
-	public String getEcheance() {
+	public int getEcheance() {
 		return echeance;
 	}
 
-	public void setEcheance(String echeance) {
+	public void setEcheance(int echeance) {
 		this.echeance = echeance;
 	}
 	
+	
+	
+	public int getVie() {
+		return vie;
+	}
+
+	public void setVie(int vie) {
+		this.vie = vie;
+	}
+
+	public String toDisplay() {
+		return "<html>"+super.getSociete().getNom() +" "+ super.getPrixAchat()+ " "+tauxInteret+" "+ frequenceRemboursement+" "+ echeance+"<br><br><br></html>";
+	}
 	
 
 }

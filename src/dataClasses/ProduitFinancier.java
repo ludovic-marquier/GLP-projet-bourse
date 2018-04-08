@@ -6,12 +6,13 @@ public class ProduitFinancier{
 	private String type;
 	private double prix;
 	private String id;
+	private String parentId;
 	
 	public ProduitFinancier() {
 		
 	}
 	
-	public ProduitFinancier(String type, String id, double prix) {
+	public ProduitFinancier(String type, String id, double prix, String parentId) {
 		this.prix = prix;
 		this.type = type;
 		this.id = id;
@@ -41,8 +42,16 @@ public class ProduitFinancier{
 		this.id = id;
 	}
 	
+	public String getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
+
 	public String toString() {
-		return "\nPRIX : "+this.prix +"\nTYPE = "+this.type+"\n\n";
+		return "\nPRIX : "+this.prix +"\nTYPE = "+this.type+"\nPARENT = "+this.parentId+"\n\n";
 	}
 	
 	

@@ -6,7 +6,7 @@ public class Action extends ProduitFinancier{
 	private Societe societe;
 	
 	public Action(double prixAchat, Societe societe) {
-		super("action","eee", prixAchat);
+		super("action","eee", prixAchat,"");
 		this.prixAchat = prixAchat;
 		this.societe = societe;
 	}

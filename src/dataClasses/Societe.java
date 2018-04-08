@@ -7,11 +7,14 @@ public class Societe {
 	private String id;
 	private String secteur;
 	private double prixDAction;
+	private double prixDObligation;
 	private long capital;
 	private int nbAction;
 	private Boolean isGrowing = false;
+	private Boolean hasObligations = false;
 	private double variation;
 	private ArrayList<Double> historique;
+	private Obligation obligation;
 	
 	public Societe() {
 		this.historique = new ArrayList<>();
@@ -92,6 +95,33 @@ public class Societe {
 	public void setVariation(double variation) {
 		this.variation = variation;
 	}
+	
+	
+	public double getPrixDObligation() {
+		return prixDObligation;
+	}
+
+	public void setPrixDObligation(double prixDObligation) {
+		this.prixDObligation = prixDObligation;
+	}
+
+	public Boolean getHasObligations() {
+		return hasObligations;
+	}
+
+	public void setHasObligations(Boolean hasObligations) {
+		this.hasObligations = hasObligations;
+	}
+	
+	
+
+	public Obligation getObligation() {
+		return obligation;
+	}
+
+	public void setObligation(Obligation obligation) {
+		this.obligation = obligation;
+	}
 
 	public String toString() {
 		return "NOM : "+this.nom+"\nID : "+this.id+"\nPRIX D'ACTION : "+
@@ -99,11 +129,11 @@ public class Societe {
 	}
 	
 	public String forLabelGrowing() {
-		return "<html>"+this.nom+"      <font color='green'>"+this.prixDAction+     "              +"+this.variation+"%</font> "+this.secteur+"<br><br></html>";
+		return "<html>"+this.nom+"      <font color='green'>"+this.prixDAction+     "              +"+this.variation+"%</font> "+this.secteur+"<br><br><br></html>";
 	}
 	
 	public String forLabelNotGrowing() {
-		return "<html>"+this.nom+"      <font color='red'>"+this.prixDAction+"              "+this.variation+"%</font> "+this.secteur+"<br><br></html>";
+		return "<html>"+this.nom+" |      <font color='red'>"+this.prixDAction+" |              |"+this.variation+"%</font> "+this.secteur+"<br><br><br></html>";
 	}
 	
 }

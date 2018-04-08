@@ -11,7 +11,12 @@ public class Generator {
 	private static String[] End = {"ix", "ax", "", "al"," inc", " corp", "sla"};
 	
 	private static String[] secteurs= {"automobile","alimentaire", "informatique","transport","vestimentaire",
-			"telecom","divertissement","sante","banque","energy","assurance"};
+			"telecom","divertissement","sante","banque","energy","spatial"};
+	
+	private static String[] type  = {"Election d'un nouveau president", "Politique europeene dans la tourmante", "Crise economique en Asie",
+			"Tentions entre les EU et la Corée du Nord", "Crise dans le secteur automobile", "Croissance en hausse", "CHaomage en baisse",
+			"Apaisement des tensiosn au moyen orient", "Forte croissane des banques", "explosion du secteur informatique"};
+	
 	
 	private Random rnd;
 	
@@ -60,11 +65,42 @@ public class Generator {
 		return secteurs[rand.nextInt(secteurs.length)];
 	}
 	
+	
+	
 	public int generateEvenement() {
 		rnd = new Random();
-		int result = rnd.nextInt(100-1)+1;
+		int result = rnd.nextInt(14-(-14))+(-14);
 		return result;
 	}
+	
+	public int updateEvenement() {
+		rnd = new Random();
+		int result = rnd.nextInt(6) + 1;
+		return result;
+	}
+	
+	public String genrateEventLabel() {
+		Random rand = new Random();
+		return type[rand.nextInt(type.length)];
+	}
+	
+
+	public int hasObliGenerator() {
+		rnd = new Random();
+		int result = rnd.nextInt(3) + 1;
+		return result;
+	}
+	
+	public double generateTaux() {
+		return -1.0 + (1.0 - (-1.0)) * new Random().nextDouble();
+	}
+	
+	public int generateEcheance() {
+		rnd = new Random();
+		int result = rnd.nextInt(6) + 1;
+		return result;
+	}
+	
 	
 	public double generateRVariation() {
 		return -1.0 + (1.0 - (-1.0)) * new Random().nextDouble();

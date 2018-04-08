@@ -9,14 +9,14 @@ import javax.swing.*;
 import dataClasses.Societe;
 import main.GameManager;
 
-public class Cotation extends JLabel{
+public class ObligationLabel extends JLabel{
 	
 	private Societe societe;
 	private GameManager manager;
 	private Boolean favoris;
 	
-	public Cotation(Societe societe, GameManager manager, Boolean favoris) {
-		super((societe.getIsGrowing())?societe.forLabelGrowing() : societe.forLabelNotGrowing());
+	public ObligationLabel(Societe societe, GameManager manager, Boolean favoris) {
+		super(societe.getObligation().toDisplay());
 		
 		this.societe = societe;
 		this.manager = manager;
